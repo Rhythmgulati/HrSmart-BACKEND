@@ -1,8 +1,8 @@
-import { asyncHandler } from "./asyncHandler";
+import jwt from "jsonwebtoken";
 
-const generateTokenService = asyncHandler(async (payload, secret, options) => {
+const generateTokenService = async (payload, secret, options) => {
     return jwt.sign(payload, secret, options);
-});
+};
 
 
 
