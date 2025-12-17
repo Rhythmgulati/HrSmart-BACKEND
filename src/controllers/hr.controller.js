@@ -3,7 +3,7 @@ import ApiResponse from "../services/apiResponse";
 import Employee from "../models/employee.model.js";
 import User from "../models/user.model.js";
 import Salary from "../models/salary.model.js";
-
+import Leave from "../models/leave.model.js";
 
 
 const addEmployee = asyncHandler( async (req, res) => {
@@ -83,6 +83,40 @@ const addSalary = async (req, res) => {
 
     ApiResponse.success(res, "Salary added successfully");
 };
+
+viewLeaveRequests = async (req, res) => {
+    // Implementation for viewing leave requests
+    const status = req.query.status; // optional filter by status
+    const filter = status ? { status } : {};
+    const leaveRequests = await Leave.find(filter).populate('employeeId', 'name position department');
+    ApiResponse.success(res, "Leave requests retrieved successfully", leaveRequests);
+
+};
+
+approveLeaveRequest = async (req, res) => {
+    // Implementation for approving leave request
+    const leaveId = req.params.id;
+    const leaveRequest = await Leave.findById(leaveId);
+    if (!leaveRequest) {
+        return ApiResponse.error(res, "Leave request not found");
+    }
+    leaveRequest.status = 'Approved';
+    await leaveRequest.save();
+    ApiResponse.success(res, "Leave request approved successfully", leaveRequest);
+};
+
+rejectLeaveRequest = async (req, res) => {
+    // Implementation for rejecting leave request
+    const leaveId = req.params.id;
+    const leaveRequest = await Leave.findById(leaveId);
+    if (!leaveRequest) {
+        return ApiResponse.error(res, "Leave request not found");
+    }   
+    leaveRequest.status = 'Rejected';
+    await leaveRequest.save();
+    ApiResponse.success(res, "Leave request rejected successfully", leaveRequest);
+};
+
 
 export {
     addEmployee,
