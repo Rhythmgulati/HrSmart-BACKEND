@@ -1,5 +1,6 @@
+import Employee from "../models/employee.model";
 
-const getEmployeeDetails = async (req, res) => {
+const getEmployeeDashboardDetails = async (req, res) => {
     const employeeId = req.user._id;
     const employee = await Employee.findById(employeeId);
     if (!employee) {
@@ -24,8 +25,8 @@ const requestLeave = async (req, res) => {
 const viewPayslip = async (req, res) => {
     const employeeId = req.user._id;
     const { month, year } = req.query;
-    const salaryRecord = await Salary.findOne({ 
-        employeeId, 
+    const salaryRecord = await Salary.findOne({
+        employeeId,
         date: {
             $gte: new Date(year, month - 1, 1),
             $lt: new Date(year, month, 1)
@@ -39,7 +40,7 @@ const viewPayslip = async (req, res) => {
 };
 
 export {
-    getEmployeeDetails,
+    getEmployeeDashboardDetails,
     requestLeave,
     viewPayslip
 };

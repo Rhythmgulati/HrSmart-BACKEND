@@ -1,6 +1,11 @@
-import mongsoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const employeeSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -15,10 +20,14 @@ const employeeSchema = new mongoose.Schema({
     },
     salary: {
         type: Number,
-        required: true, 
-    }
+        required: true,
+    },
+    imageUrl: {
+        type: String,
+    },
+
 }, {
-    timestamps: true,   
+    timestamps: true,
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);

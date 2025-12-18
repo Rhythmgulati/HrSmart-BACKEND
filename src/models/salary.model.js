@@ -10,7 +10,11 @@ const SalarySchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    date: { 
+    duration: {
+        type: String,
+        required: true,
+    },
+    date: {
         type: Date,
         required: true,
         default: Date.now,

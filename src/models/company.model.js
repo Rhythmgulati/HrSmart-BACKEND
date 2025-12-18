@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 const CompanySchema = new mongoose.Schema({
+    id: {
+        type: mongoose.Schema.Types.ObjectId,
+    },
     name: {
-        type: String,   
+        type: String,
         required: true,
         unique: true,
     },
-    address: {  
+    address: {
         type: String,
         required: true,
     },
@@ -14,23 +17,23 @@ const CompanySchema = new mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
-    },      
+    },
     phone: {
         type: String,
-        required: true, 
+        required: true,
     },
     website: {
         type: String,
-        required: false,    
+        required: false,
     },
     industry: {
         type: String,
         required: true,
     },
-    numberOfEmployees: {            
+    numberOfEmployees: {
         type: Number,
         // required: true,
-    },  
+    },
 }, {
     timestamps: true,
 });
