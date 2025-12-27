@@ -1,31 +1,36 @@
-import ApiResponse from "../services/responseHandler";
-
+import { asyncHandler } from "../services/asyncHandler.js";
+import ApiResponse from "../services/responseHandler.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 const verifyJwt = asyncHandler(async (req, res, next) => {
   const token = req.headers.authorization?.replace("Bearer ", "").trim();
+  console.log("toke",token);
+  
     if (!token) {   
-    throw new ApiResponse.error(401, "Unauthorized Request!");
+    return ApiResponse.error(res, "Unauthorized", 401);
     }
     try {
-    const decodedToken = await new Promise((resolve, reject) => {
-      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) return reject(err);
-        resolve(decoded);
-      });
-    });
+    console.log("tryblock");
 
-    const user = await getUser(decodedToken?.userId);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decodedToken);
+    
+
+    const user = await User.findById(decodedToken?.id);
+    console.log(user);
+    
     if (!user) {
-        throw new ApiResponse.error(401, "Invalid Access Token!");
+    return ApiResponse.error(res, "Unauthorized", 401);
+
     }
 
     req.user = user;
     next();
   } catch (err) {
     if (err.name === "TokenExpiredError") {
-      next(new ApiResponse.error(401, "Token Expired"));
+     return ApiResponse.error(res, "Token Expired", 401);
     } else {
-      next(new ApiResponse.error(401, "Invalid Access Token"));
-    }
+     return ApiResponse.error(res, "Invalid Access Token", 401);   }
     }
 });
 

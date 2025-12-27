@@ -14,8 +14,8 @@ const getStats = asyncHandler(async (req, res) => {
     // const pendingLeaves = await Leave.countDocuments({ status: 'Pending' });
     ApiResponse.success(res, "HR stats retrieved successfully", {
         totalEmployees,
-        totalLeaves,
-        pendingLeaves
+        // totalLeaves,
+        // pendingLeaves
     });
 });
 
@@ -27,9 +27,12 @@ const addEmployee = asyncHandler(async (req, res) => {
     if (!name || !position || !department || !salary) {
         return ApiResponse.error(res, "All fields are required");
     }
-    const newUser = new User({ email, password });
+
+    const companyId = req.user.companyId;
+    
+    const newUser = new User({ email, password , isActive: true, companyId: companyId });
     console.log(newUser);
-    const newEmployee = new Employee({ name, position, department, salary });
+    const newEmployee = new Employee({ name, position, department, salary , userId: newUser._id});
     await newUser.save();
     await newEmployee.save();
     ApiResponse.success(res, "Employee added successfully", newEmployee);
@@ -39,7 +42,7 @@ const addEmployee = asyncHandler(async (req, res) => {
 const listAllEmployees = asyncHandler(async (req, res) => {
     // Implementation for listing all employees
     const companyId = req.user.companyId;
-    const employees = await Employee.find({ companyId });
+    const employees = await Employee.find({ userId : { $in: await User.find({ companyId }).distinct('_id') } });
     ApiResponse.success(res, "Employees retrieved successfully", employees);
 
 });

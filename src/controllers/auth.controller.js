@@ -4,6 +4,7 @@ import ApiResponse from "../services/responseHandler.js";
 import user from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateTokenService } from "../services/authService.js";
+import Employee from "../models/employee.model.js";
 
 
 const createCompany = asyncHandler(async (req, res) => {
@@ -40,9 +41,11 @@ const registerUser = asyncHandler(async (req, res) => {
         return ApiResponse.error(res, "User with this email already exists", 400);
     };
     const newUser = new user({ companyId, name, email, password });
+    const employee = new Employee({ name, position: "New Hire", department: "Unassigned", salary: 0 , userId: newUser._id});
+    await employee.save();
     await newUser.save();
 
-    const token = await generateTokenService({ id: newUser._id }, "secret", { expiresIn: '1h' });
+    const token = await generateTokenService({ id: newUser._id });
 
     ApiResponse.success(res, { newUser, token }, "User registered successfully");
 
@@ -67,7 +70,7 @@ const loginUser = asyncHandler(async (req, res) => {
         return ApiResponse.error(res, "Invalid email or password", 400);
     };
 
-    const token = await generateTokenService({ id: existingUser._id }, "secret", { expiresIn: '1h' });
+    const token = await generateTokenService({ id: existingUser._id , companyId: existingUser.companyId});
 
     ApiResponse.success(res, "User logged in successfully", { existingUser, token });
 });

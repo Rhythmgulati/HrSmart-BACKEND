@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const generateTokenService = async (payload, secret, options) => {
-    return jwt.sign(payload, secret, options);
+const generateTokenService = async (payload, options) => {
+    
+    return jwt.sign(payload,process.env.JWT_SECRET, options);
 };
 
 

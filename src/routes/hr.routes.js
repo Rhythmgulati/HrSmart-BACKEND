@@ -15,17 +15,18 @@ import {
     rejectLeaveRequest,
     getStats
 } from '../controllers/hr.controller.js';
+import { verifyJwt } from '../middlewares/auth.middleware.js';
 
-router.get('/stats', getStats);
-router.post('/employees', addEmployee);
-router.put('/employees/:id', updateEmployeeInfo);
-router.delete('/employees/:id', removeEmployee);
-router.get('/employees/search', searchEmployees);
-router.get('/employees', listAllEmployees);
-router.get('/employees/:id', viewEmployeeDetails);
-router.post('/salaries', addSalary);
-router.get("/view-leave-requests", viewLeaveRequests);
-router.post("/approve-leave-request/:id", approveLeaveRequest);
-router.post("/reject-leave-request/:id", rejectLeaveRequest);
+router.get('/stats', verifyJwt,getStats);  //done
+router.post('/add-employee',verifyJwt, addEmployee); //done
+router.put('/employee/:id',verifyJwt, updateEmployeeInfo); //done
+router.delete('/employee/:id', verifyJwt, removeEmployee); //done
+router.get('/employees/search', verifyJwt, searchEmployees); 
+router.get('/employees', verifyJwt, listAllEmployees); //done
+router.get('/employees/:id', verifyJwt, viewEmployeeDetails);  //done
+router.post('/salaries', verifyJwt, addSalary); //done
+router.get("/view-leave-requests", viewLeaveRequests); //done
+router.post("/approve-leave-request/:id", approveLeaveRequest); //done
+router.post("/reject-leave-request/:id", rejectLeaveRequest); //done   
 
 export { router as hrRoutes };
